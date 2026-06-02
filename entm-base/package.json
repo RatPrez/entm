@@ -1,0 +1,14 @@
+{
+    "name": "@entm/base",
+    "version": "0.1.0",
+    "description": "Types and API wrapper for the entm ECS framework",
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "scripts": {
+        "build": "tsc"
+    },
+    "devDependencies": {
+        "typescript": "^5.3.3"
+    },
+    "license": "ISC"
+}
