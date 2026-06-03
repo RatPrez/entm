@@ -1,6 +1,6 @@
 {
     "name": "@ratprez/entm",
-    "version": "0.1.4",
+    "version": "0.2.0",
     "description": "ECS framework for FiveM - types, core classes, and shared component API",
     "homepage": "https://github.com/RatPrez/entm",
     "repository": {
