@@ -5,14 +5,21 @@
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "scripts": {
-        "build": "tsc"
+        "build": "tsc",
+        "test": "vitest"
     },
-    "keywords": ["fivem", "ecs", "entity-component-system", "typescript"],
+    "keywords": [
+        "fivem",
+        "ecs",
+        "entity-component-system",
+        "typescript"
+    ],
     "license": "ISC",
     "publishConfig": {
         "access": "public"
     },
     "devDependencies": {
-        "typescript": "^5.3.3"
+        "typescript": "^5.3.3",
+        "vitest": "^4.1.8"
     }
 }

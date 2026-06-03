@@ -2,3 +2,5 @@ src/
 node_modules/
 tsconfig.json
 .gitignore
+tests/
+vitest.config.ts

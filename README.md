@@ -10,6 +10,16 @@ TypeScript ECS (Entity Component System) framework package for FiveM. This is th
 npm install @ratprez/entm
 ```
 
+## Testing
+
+The package includes a comprehensive test suite built with Vitest:
+
+```bash
+npm test
+```
+
+**Coverage:** 138 tests across 8 test files covering all core ECS functionality including ComponentPool, World, View, System, Vec3 math, Profiler, and integration scenarios.
+
 ## What's included
 
 ### Core ECS
@@ -49,7 +59,6 @@ import { System, Component, vec3 } from "@ratprez/entm";
 import type { World } from "@ratprez/entm";
 
 class Health extends Component {
-    readonly sType = "health" as const;
     current: number;
     max:     number;
 
