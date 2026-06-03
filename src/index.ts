@@ -40,4 +40,4 @@ export { SVehicle }                     from "./server/components/SVehicle";
 // Math
 // ========================================
 
-export type { Vec3 }                    from "./shared/math/Vec3";
+export { Vec3 }                         from "./shared/math/Vec3";
