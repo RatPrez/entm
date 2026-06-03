@@ -1,4 +1,5 @@
-# @ratprez/entm
+## @ratprez/entm
+[![npm version](https://img.shields.io/npm/v/@ratprez/entm.svg)](https://www.npmjs.com/package/@ratprez/entm)
 
 TypeScript ECS (Entity Component System) framework package for FiveM. This is the base package - it provides the core classes, component types, and math utilities used by [entm-core](https://github.com/RatPrez/entm-core) and any module built on top of it.
 
