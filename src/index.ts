@@ -1,5 +1,5 @@
 export { Component }      from "./shared/core/Component";
-export { shared }         from "./shared/core/decorators";
+export { shared }         from "./shared/core/Decorators";
 export type { EntityId }  from "./shared/core/Entity";
 export { ComponentPool }  from "./shared/core/ComponentPool";
 export type { IComponentPool } from "./shared/core/ComponentPool";
