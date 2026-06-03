@@ -1,7 +1,7 @@
-import { Entity }    from "../../shared/components/Entity";
+import { WorldObject } from "../../shared/components/WorldObject";
 import type { Vec3 } from "../../shared/math/Vec3";
 
-export class SPed extends Entity {
+export class SPed extends WorldObject {
     constructor(data: { model: number; position: Vec3; rotation: Vec3;}) {
         super({ ...data, networked: true });
     }

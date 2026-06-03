@@ -18,7 +18,7 @@ export type { ProfileStat }             from "./shared/core/Profiler";
 // Components - Shared
 // ========================================
 
-export { Entity }                       from "./shared/components/Entity";
+export { WorldObject }                  from "./shared/components/WorldObject";
 export { CfxEntity }                    from "./shared/components/CfxEntity";
 export { Transform }                    from "./shared/components/Transform";
 
