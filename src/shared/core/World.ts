@@ -1,5 +1,5 @@
 import type { Component }                from "./Component";
-import type { EntityId }                from "./Entity";
+import type { EntityId }                 from "./Entity";
 import { ComponentPool, IComponentPool } from "./ComponentPool";
 import { System }                        from "./System";
 import { View }                          from "./View";
