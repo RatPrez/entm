@@ -3,7 +3,7 @@ import { World } from "../src/shared/core/World";
 import { System } from "../src/shared/core/System";
 import { Component } from "../src/shared/core/Component";
 import { Transform } from "../src/shared/components/Transform";
-import { vec3, vec3Add } from "../src/shared/math/Vec3";
+import { Vec3 } from "../src/shared/math/Vec3";
 import type { EntityId } from "../src/shared/core/Entity";
 
 class Velocity extends Component {
@@ -22,9 +22,8 @@ class Velocity extends Component {
 class MovementSystem extends System {
     override update(deltaTime: number): void {
         for (const { entityId, transform, velocity } of this.m_world.view(Transform, Velocity)) {
-            transform.position = vec3Add(
-                transform.position,
-                vec3(
+            transform.position = transform.position.add(
+                new Vec3(
                     velocity.vx * deltaTime,
                     velocity.vy * deltaTime,
                     velocity.vz * deltaTime
@@ -45,9 +44,9 @@ describe("ECS Integration", () => {
         it("should create entity with components, update, and destroy", () => {
             const entity = world.createEntity();
             world.addComponent(entity, new Transform({
-                position: vec3(0, 0, 0),
-                rotation: vec3(),
-                scale: vec3(1, 1, 1)
+                position: new Vec3(0, 0, 0),
+                rotation: new Vec3(),
+                scale: new Vec3(1, 1, 1)
             }));
             world.addComponent(entity, new Velocity(10, 0, 0));
 
@@ -75,23 +74,23 @@ describe("ECS Integration", () => {
             const e3 = world.createEntity();
 
             world.addComponent(e1, new Transform({
-                position: vec3(0, 0, 0),
-                rotation: vec3(),
-                scale: vec3(1, 1, 1)
+                position: new Vec3(0, 0, 0),
+                rotation: new Vec3(),
+                scale: new Vec3(1, 1, 1)
             }));
             world.addComponent(e1, new Velocity(1, 0, 0));
 
             world.addComponent(e2, new Transform({
-                position: vec3(10, 0, 0),
-                rotation: vec3(),
-                scale: vec3(1, 1, 1)
+                position: new Vec3(10, 0, 0),
+                rotation: new Vec3(),
+                scale: new Vec3(1, 1, 1)
             }));
             world.addComponent(e2, new Velocity(2, 0, 0));
 
             world.addComponent(e3, new Transform({
-                position: vec3(20, 0, 0),
-                rotation: vec3(),
-                scale: vec3(1, 1, 1)
+                position: new Vec3(20, 0, 0),
+                rotation: new Vec3(),
+                scale: new Vec3(1, 1, 1)
             }));
 
             world.addSystem(new MovementSystem(world));
@@ -109,16 +108,16 @@ describe("ECS Integration", () => {
             const e2 = world.createEntity();
 
             world.addComponent(e1, new Transform({
-                position: vec3(),
-                rotation: vec3(),
-                scale: vec3(1, 1, 1)
+                position: new Vec3(),
+                rotation: new Vec3(),
+                scale: new Vec3(1, 1, 1)
             }));
             world.addComponent(e1, new Velocity(1, 0, 0));
 
             world.addComponent(e2, new Transform({
-                position: vec3(),
-                rotation: vec3(),
-                scale: vec3(1, 1, 1)
+                position: new Vec3(),
+                rotation: new Vec3(),
+                scale: new Vec3(1, 1, 1)
             }));
 
             const view = world.view(Transform, Velocity);
@@ -163,9 +162,9 @@ describe("ECS Integration", () => {
             expect(system.entityCount).toBe(1);
 
             world.addComponent(e1, new Transform({
-                position: vec3(),
-                rotation: vec3(),
-                scale: vec3(1, 1, 1)
+                position: new Vec3(),
+                rotation: new Vec3(),
+                scale: new Vec3(1, 1, 1)
             }));
             expect(system.componentCount).toBe(1);
 
@@ -187,9 +186,9 @@ describe("ECS Integration", () => {
             for (let i = 0; i < 10; i++) {
                 const e = world.createEntity();
                 world.addComponent(e, new Transform({
-                    position: vec3(i * 10, 0, 0),
-                    rotation: vec3(),
-                    scale: vec3(1, 1, 1)
+                    position: new Vec3(i * 10, 0, 0),
+                    rotation: new Vec3(),
+                    scale: new Vec3(1, 1, 1)
                 }));
                 world.addComponent(e, new Velocity(i, 0, 0));
                 entities.push(e);
@@ -242,9 +241,9 @@ describe("ECS Integration", () => {
             for (let i = 0; i < 1000; i++) {
                 const e = world.createEntity();
                 world.addComponent(e, new Transform({
-                    position: vec3(i, 0, 0),
-                    rotation: vec3(),
-                    scale: vec3(1, 1, 1)
+                    position: new Vec3(i, 0, 0),
+                    rotation: new Vec3(),
+                    scale: new Vec3(1, 1, 1)
                 }));
                 if (i % 2 === 0) {
                     world.addComponent(e, new Velocity(1, 0, 0));
