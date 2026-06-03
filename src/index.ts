@@ -3,7 +3,7 @@
 // ========================================
 
 export { Component }                    from "./shared/core/Component";
-export { shared }                       from "./shared/core/Decorators";
+export { shared, sync, ignore }         from "./shared/core/Decorators";
 export type { EntityId }                from "./shared/core/Entity";
 export { ComponentPool }                from "./shared/core/ComponentPool";
 export type { IComponentPool }          from "./shared/core/ComponentPool";
@@ -21,6 +21,7 @@ export type { ProfileStat }             from "./shared/core/Profiler";
 export { WorldObject }                  from "./shared/components/WorldObject";
 export { CfxEntity }                    from "./shared/components/CfxEntity";
 export { Transform }                    from "./shared/components/Transform";
+export { NetEntity }                    from "./shared/components/NetEntity";
 
 // ========================================
 // Components - Client Only

@@ -4,6 +4,8 @@ import { ComponentPool, IComponentPool } from "./ComponentPool";
 import { System }                        from "./System";
 import { View }                          from "./View";
 import { Profiler }                      from "./Profiler";
+import { NetEntity }                     from "../components/NetEntity";
+import { SyncQueue }                     from "./SyncQueue";
 
 const k_entityInvalid = -1;
 
@@ -54,7 +56,7 @@ export class World {
 
     /// --- entities ---
 
-    createEntity(): EntityId {
+    createEntity(synced: boolean = false): EntityId {
         let id: EntityId;
 
         if (this.m_freeIds.length > 0) {
@@ -67,6 +69,10 @@ export class World {
         const index = this.m_dense.length;
         this.m_dense.push(id);
         this.m_sparse[id] = index;
+
+        if (synced) {
+            this.addComponent(id, { netId: id } as NetEntity)
+        }
 
         for (const system of this.m_systems.values()) {
             if (system.m_hasOnEntityCreated) system.onEntityCreated(id);
@@ -111,6 +117,10 @@ export class World {
 
     addComponent<T extends Component>(id: EntityId, component: T): T {
         const ctor = component.constructor as new (...args: any[]) => T;
+
+        if ((ctor as any).sync === 'full') {
+            component = this.syncQueue.addComponentSync(id, component);
+        }
 
         if (!this.m_componentPools.has(ctor)) {
             this.m_componentPools.set(ctor, new ComponentPool<T>());
@@ -181,12 +191,15 @@ export class World {
     }
 
 // private
-    private m_nextEntityId: number = 0;
-    private m_sparse:       number[] = [];
-    private m_dense:        EntityId[] = [];
-    private m_freeIds:      EntityId[] = [];
+    private m_nextEntityId:         number = 0;
+    private m_sparse:               number[] = [];
+    private m_dense:                EntityId[] = [];
+    private m_freeIds:              EntityId[] = [];
 
-    private m_profiler:       Profiler | null = null;
-    private m_systems:        Map<new (...args: any[]) => System, System> = new Map();
-    private m_componentPools: Map<Function, IComponentPool>               = new Map();
+    private m_profiler:             Profiler | null = null;
+    private m_systems:              Map<new (...args: any[]) => System, System> = new Map();
+    private m_componentPools:       Map<Function, IComponentPool> = new Map();
+
+// public
+    public syncQueue:            SyncQueue = new SyncQueue();
 }
