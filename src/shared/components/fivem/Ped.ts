@@ -2,7 +2,6 @@ import { EntityComponent } from "../EntityComponent";
 import type { Vec3 }        from "../../math/Vec3";
 
 export class Ped extends EntityComponent {
-    readonly sType = "ped" as const;
     health: number;
     armour: number;
 

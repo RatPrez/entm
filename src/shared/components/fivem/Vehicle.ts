@@ -2,7 +2,6 @@ import { EntityComponent } from "../EntityComponent";
 import type { Vec3 }        from "../../math/Vec3";
 
 export class Vehicle extends EntityComponent {
-    readonly sType = "vehicle" as const;
     speed: number;
     gear:  number;
     rpm:   number;

@@ -1,7 +1,6 @@
 import { Component } from "../core/Component";
 
 export class CfxEntity extends Component {
-    readonly sType = "cfxEntity" as const;
     readonly handle:     number;
     readonly model:      number;
     readonly entityType: string;

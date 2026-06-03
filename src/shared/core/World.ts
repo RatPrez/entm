@@ -135,8 +135,9 @@ export class World {
 
         pool.removeById(id);
 
+        const sType = ctor.name.charAt(0).toLowerCase() + ctor.name.slice(1);
         for (const system of this.m_systems.values()) {
-            if (system.m_hasOnComponentRemoved) system.onComponentRemoved(id, ctor.name);
+            if (system.m_hasOnComponentRemoved) system.onComponentRemoved(id, sType);
         }
     }
 
