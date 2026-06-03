@@ -14,7 +14,10 @@ export function sync(mode: 'full' | 'life') {
         target: T,
         context: ClassDecoratorContext<T>
     ): void {
+        if (typeof context.name !== "string") return;
         (target as any).sync = mode;
+        (globalThis as any).__entm ??= {};
+        (globalThis as any).__entm[context.name] = target;
     }
 }
 
