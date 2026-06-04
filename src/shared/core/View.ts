@@ -1,6 +1,7 @@
 import type { Component } from "./Component";
 import type { EntityId }  from "./Entity";
 import type { World }     from "./World";
+import { toCamelCase }    from "./Utils";
 
 export type ViewResult<T extends Component[]> =
     { entityId: EntityId } &
@@ -50,8 +51,7 @@ export class View<T extends Component[] = Component[]> {
     }
 
     private m_key(ctor: new (...args: any[]) => Component): string {
-        const n = ctor.name;
-        return n.charAt(0).toLowerCase() + n.slice(1);
+        return toCamelCase(ctor.name);
     }
 
     private m_world: World;

@@ -1,11 +1,12 @@
 import type { Component } from "./Component";
+import { toCamelCase }    from "./Utils";
 
 export function shared<T extends abstract new (...args: any[]) => Component>(
     target: T,
     context: ClassDecoratorContext<T>
 ): void {
     if (typeof context.name !== "string") return;
-    const sType = context.name.charAt(0).toLowerCase() + context.name.slice(1);
+    const sType = toCamelCase(context.name);
     (globalThis as any).__entm ??= {};
     (globalThis as any).__entm[sType] = target;
 }
@@ -16,7 +17,7 @@ export function sync(mode: 'full' | 'life') {
         context: ClassDecoratorContext<T>
     ): void {
         if (typeof context.name !== "string") return;
-        const sType = context.name.charAt(0).toLowerCase() + context.name.slice(1);
+        const sType = toCamelCase(context.name);
         (target as any).sync = mode;
         (globalThis as any).__entm ??= {};
         (globalThis as any).__entm[sType] = target;

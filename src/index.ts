@@ -38,7 +38,8 @@ export { SPed }                         from "./server/components/SPed";
 export { SVehicle }                     from "./server/components/SVehicle";
 
 // ========================================
-// Math
+// Math / Util
 // ========================================
 
 export { Vec3 }                         from "./shared/math/Vec3";
+export { toCamelCase, compareClass }    from "./shared/core/Utils";
