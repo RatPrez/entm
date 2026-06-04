@@ -71,7 +71,7 @@ export class World {
         this.m_sparse[id] = index;
 
         if (synced) {
-            this.addComponent(id, { netId: id } as NetEntity)
+            this.addComponent(id, new NetEntity(id));
         }
 
         for (const system of this.m_systems.values()) {
