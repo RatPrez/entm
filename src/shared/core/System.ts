@@ -12,7 +12,9 @@ export class System {
     onStart(): void {}
     onEnd(): void {}
     onEntityCreated(id: EntityId): void {}
-    onEntityDestroyed(id: EntityId): void {}
+    onEntityDestroyed(id: EntityId): void { }
+    onNetEntityCreated(id: EntityId): void {}
+    onNetEntityDestroyed(id: EntityId): void {}
     onComponentAdded(id: EntityId, sType: string): void {}
     onComponentRemoved(id: EntityId, sType: string): void {}
 
@@ -21,7 +23,9 @@ export class System {
     m_hasOnStart:            boolean = false;
     m_hasOnEnd:              boolean = false;
     m_hasOnEntityCreated:    boolean = false;
-    m_hasOnEntityDestroyed:  boolean = false;
+    m_hasOnEntityDestroyed: boolean = false;
+    m_hasOnNetEntityCreated:    boolean = false;
+    m_hasOnNetEntityDestroyed:  boolean = false;
     m_hasOnComponentAdded:   boolean = false;
     m_hasOnComponentRemoved: boolean = false;
 

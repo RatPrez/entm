@@ -4,8 +4,8 @@ import { ComponentPool, IComponentPool } from "./ComponentPool";
 import { System }                        from "./System";
 import { View }                          from "./View";
 import { Profiler }                      from "./Profiler";
-import { NetEntity }                     from "../components/NetEntity";
 import { SyncQueue }                     from "./SyncQueue";
+import { toCamelCase, compareClass }     from "./Utils";
 
 const k_entityInvalid = -1;
 
@@ -70,8 +70,10 @@ export class World {
         this.m_dense.push(id);
         this.m_sparse[id] = index;
 
-        if (synced) {
-            this.addComponent(id, new NetEntity(id));
+        if (synced && IsDuplicityVersion()) {
+            for (const system of this.m_systems.values()) {
+                if (system.m_hasOnNetEntityCreated) system.onNetEntityCreated(id);
+            }
         }
 
         for (const system of this.m_systems.values()) {
@@ -97,6 +99,27 @@ export class World {
 
         this.m_dense.pop();
         this.m_sparse[id] = k_entityInvalid;
+
+        for (const [ctor, pool] of this.m_componentPools.entries()) {
+            if (!pool.has(id)) continue;
+
+            const component = (pool as ComponentPool<Component>).get(id);
+            const isNet = compareClass(component?.sType, "netEntity");
+
+            if (isNet) {
+                for (const system of this.m_systems.values()) {
+                    if (system.m_hasOnNetEntityDestroyed) {
+                        system.onNetEntityDestroyed(id);
+                    }
+                }
+            } else if (component) {
+                for (const system of this.m_systems.values()) {
+                    if (system.m_hasOnComponentRemoved) {
+                        system.onComponentRemoved(id, component.sType);
+                    }
+                }
+            }
+        }
 
         for (const pool of this.m_componentPools.values()) {
             pool.removeById(id);
@@ -143,12 +166,24 @@ export class World {
         const pool = this.m_componentPools.get(ctor);
         if (!pool?.has(id)) return;
 
-        pool.removeById(id);
+        const sType = toCamelCase(ctor.name);
+        const isNet = compareClass(sType, "netEntity");
 
-        const sType = ctor.name.charAt(0).toLowerCase() + ctor.name.slice(1);
-        for (const system of this.m_systems.values()) {
-            if (system.m_hasOnComponentRemoved) system.onComponentRemoved(id, sType);
+        if (isNet) {
+            for (const system of this.m_systems.values()) {
+                if (system.m_hasOnNetEntityDestroyed) {
+                    system.onNetEntityDestroyed(id);
+                }
+            }
+        } else {
+            for (const system of this.m_systems.values()) {
+                if (system.m_hasOnComponentRemoved) {
+                    system.onComponentRemoved(id, sType);
+                }
+            }
         }
+
+        pool.removeById(id);
     }
 
     getPool<T extends Component>(ctor: new (...args: any[]) => T): ComponentPool<T> | null {
@@ -172,6 +207,8 @@ export class World {
         system.m_hasOnEnd              = system.onEnd              !== System.prototype.onEnd;
         system.m_hasOnEntityCreated    = system.onEntityCreated    !== System.prototype.onEntityCreated;
         system.m_hasOnEntityDestroyed  = system.onEntityDestroyed  !== System.prototype.onEntityDestroyed;
+        system.m_hasOnNetEntityCreated    = system.onNetEntityCreated    !== System.prototype.onNetEntityCreated;
+        system.m_hasOnNetEntityDestroyed  = system.onNetEntityDestroyed  !== System.prototype.onNetEntityDestroyed;
         system.m_hasOnComponentAdded   = system.onComponentAdded   !== System.prototype.onComponentAdded;
         system.m_hasOnComponentRemoved = system.onComponentRemoved !== System.prototype.onComponentRemoved;
 
@@ -191,7 +228,7 @@ export class World {
     }
 
 // private
-    private m_nextEntityId:         number = 0;
+    private m_nextEntityId:         number = 1;
     private m_sparse:               number[] = [];
     private m_dense:                EntityId[] = [];
     private m_freeIds:              EntityId[] = [];
