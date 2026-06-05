@@ -13,6 +13,8 @@ export class SyncQueue {
             return component;
         }
 
+        this.queue.push({ entityId, component });
+
         const self = this;
         return new Proxy(component, {
             set(target, key, value) {
