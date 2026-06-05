@@ -22,6 +22,7 @@ export { WorldObject }                  from "./shared/components/WorldObject";
 export { CfxEntity }                    from "./shared/components/CfxEntity";
 export { Transform }                    from "./shared/components/Transform";
 export { NetEntity }                    from "./shared/components/NetEntity";
+export { PlayerData }                   from "./shared/components/PlayerData";
 
 // ========================================
 // Components - Client Only
@@ -43,3 +44,4 @@ export { SVehicle }                     from "./server/components/SVehicle";
 
 export { Vec3 }                         from "./shared/math/Vec3";
 export { toCamelCase, compareClass }    from "./shared/core/Utils";
+export { Logger }                       from "./shared/core/Logger"

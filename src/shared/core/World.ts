@@ -1,5 +1,6 @@
 import type { Component }                from "./Component";
 import type { EntityId }                 from "./Entity";
+import { PlayerData }                    from "../components/PlayerData";
 import { ComponentPool, IComponentPool } from "./ComponentPool";
 import { System }                        from "./System";
 import { View }                          from "./View";
@@ -18,6 +19,22 @@ export class World {
                 if (system.m_hasOnEnd) system.onEnd();
             }
         });
+
+        if (IsDuplicityVersion()) {
+            // server
+            onNet("__int_entm::ready", () => this.initPlayer(source));
+            on("playerDropped", () => this.destroyPlayer(source));
+
+        } else {
+            // client
+            onNet("__int_entm::playerLoaded", (entityId: number) => {
+                console.log(`m_localEntityId: ${entityId}`);
+                this.m_localEntityId = entityId;
+            });
+
+            emitNet("__int_entm::ready");
+        }
+
     }
 
     setProfiler(profiler: Profiler): void {
@@ -227,6 +244,49 @@ export class World {
         return (this.m_systems.get(ctor) as T) ?? null;
     }
 
+    /// --- FiveM Specific ---
+
+    getLocalPlayerEntityId(): EntityId | null {
+        if (IsDuplicityVersion()) {
+            // warn log here, is client only method
+            return null;
+        }
+        return this.m_localEntityId;
+    }
+
+    getEntityIdFromLocalPlayer(source: number): EntityId | null {
+        if (IsDuplicityVersion()) {
+            // warn log here, is client only method
+            return null;
+        }
+        return this.getEntityIdFromSource(GetPlayerServerId(source));
+    }
+
+    getEntityIdFromSource(source: number): EntityId | null {
+        if (IsDuplicityVersion()) {
+            return this.m_playerToEntity.get(source) ?? null;
+        }
+        for (const { entityId, playerData } of this.view(PlayerData)) {
+            if (playerData.source == source) { // == intentional, FiveM may pass source as string because fuck knows why
+                return entityId;
+            }
+        }
+        return null;
+    }
+
+    getSourceFromEntityId(entityId: EntityId): number | null {
+        if (IsDuplicityVersion()) {
+            return this.m_entityToPlayer.get(entityId) ?? null;
+        }
+        return this.getComponent(entityId, PlayerData)?.source ?? null;
+    }
+
+    isEntityAPlayer(entityId: EntityId): boolean {
+        return this.getSourceFromEntityId(entityId) !== null;
+    }
+
+    public syncQueue:               SyncQueue = new SyncQueue();
+
 // private
     private m_nextEntityId:         number = 1;
     private m_sparse:               number[] = [];
@@ -236,7 +296,31 @@ export class World {
     private m_profiler:             Profiler | null = null;
     private m_systems:              Map<new (...args: any[]) => System, System> = new Map();
     private m_componentPools:       Map<Function, IComponentPool> = new Map();
+    private m_playerToEntity:       Map<number, EntityId> = new Map();
+    private m_entityToPlayer:       Map<EntityId, number> = new Map();
+    private m_localEntityId:        EntityId | null = null;
 
-// public
-    public syncQueue:            SyncQueue = new SyncQueue();
+    private initPlayer(source: number): void {
+        console.log(source);
+
+        if (this.m_playerToEntity.has(source)) return;
+
+        const entityId = this.createEntity(true);
+        this.addComponent(entityId, new PlayerData(source, GetPlayerName(source)));
+
+        this.m_playerToEntity.set(source, entityId);
+        this.m_entityToPlayer.set(entityId, source);
+
+        emitNet("__int_entm::playerLoaded", source, entityId);
+        emit("__int_entm::playerLoaded", source, entityId);
+    }
+
+    private destroyPlayer(source: number): void {
+        const entityId = this.m_playerToEntity.get(source);
+        if (entityId === undefined) { return; }
+        this.destroyEntity(entityId);
+        this.m_playerToEntity.delete(source);
+        this.m_entityToPlayer.delete(entityId);
+    }
+
 }
