@@ -28,7 +28,6 @@ export class World {
         } else {
             // client
             onNet("__int_entm::playerLoaded", (entityId: number) => {
-                console.log(`m_localEntityId: ${entityId}`);
                 this.m_localEntityId = entityId;
             });
 
@@ -301,8 +300,6 @@ export class World {
     private m_localEntityId:        EntityId | null = null;
 
     private initPlayer(source: number): void {
-        console.log(source);
-
         if (this.m_playerToEntity.has(source)) return;
 
         const entityId = this.createEntity(true);
