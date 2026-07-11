@@ -22,7 +22,7 @@
         "entity-component-system",
         "typescript"
     ],
-    "license": "ISC",
+    "license": "MIT",
     "publishConfig": {
         "access": "public"
     },
